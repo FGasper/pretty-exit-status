@@ -8,18 +8,15 @@ function pretty_exit_status {
     if (($1 == 0)); then
         pretty_status=OK;
     else
-        local name;
         local number;
+
+        pretty_status="ERROR $1"
 
         if (($1 > 128)); then
             number=$(($1 - 128));
-            name=${SIGNAL_NAME[$number]};
-        fi
-
-        if [ -z $name ]; then
-            pretty_status="ERROR $1"
-        else
-            pretty_status="SIG$name ($number)"
+            if ( [ -n "${SIGNAL_NAME[$number]}" ] ); then
+                pretty_status="$pretty_status (SIG${SIGNAL_NAME[$number]}, $number)"
+            fi
         fi
     fi
 
